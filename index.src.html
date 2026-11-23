@@ -43,10 +43,11 @@ body:not(.run) #hud{opacity:0}
 .bub{position:absolute;transform:translate(-50%,-100%);background:#fff;border-radius:16px;padding:4px 12px;font-weight:800;font-size:16px;box-shadow:0 4px 10px rgba(0,0,0,.25);white-space:nowrap;animation:bi .25s cubic-bezier(.3,1.7,.5,1)}
 @keyframes bi{from{transform:translate(-50%,-70%) scale(.3);opacity:0}}
 .fly{position:absolute;width:20px;height:20px;border-radius:5px;background:var(--g2);box-shadow:0 0 12px var(--g2);transition:transform .38s cubic-bezier(.5,-.3,.7,1),opacity .38s;pointer-events:none}
+#vig{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 46%,transparent 52%,rgba(20,10,4,.42))}
 #fx{position:fixed;inset:0;pointer-events:none;opacity:0;transition:opacity .25s}
 #fx.turbo{opacity:1;box-shadow:inset 0 0 120px 40px rgba(134,217,43,.5)}#fx.key{opacity:1;box-shadow:inset 0 0 140px 50px rgba(255,214,92,.45)}#fx.hit{opacity:1;transition:none;background:rgba(255,60,90,.28)}
 .screen{position:fixed;inset:0;display:none;place-items:center;padding:16px;z-index:5}.screen.on{display:grid}
-#menu{place-items:stretch;background:linear-gradient(rgba(10,16,13,.55),rgba(10,16,13,0) 38%,rgba(10,16,13,0) 62%,rgba(10,16,13,.7))}
+#menu{place-items:stretch;background:linear-gradient(rgba(10,16,13,.5),rgba(10,16,13,0) 34%,rgba(10,16,13,0) 66%,rgba(10,16,13,.72))}
 #menu .in{display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:max(6vh,24px) 0 max(4vh,16px);text-align:center}
 h1.logo{margin:0;font-size:clamp(54px,17vw,128px);line-height:.8;font-weight:800;color:#fff;letter-spacing:1px;transform:rotate(-3deg);text-shadow:0 5px 0 var(--g),0 10px 0 #4f8f1c,0 16px 0 var(--ink),0 26px 34px rgba(0,0,0,.5)}
 h1.logo span{color:var(--g2);display:block}
@@ -72,7 +73,7 @@ h1.logo span{color:var(--g2);display:block}
 </head>
 <body>
 <canvas id="c"></canvas>
-<div id="fx"></div>
+<div id="vig"></div><div id="fx"></div>
 <div id="pops"><div id="toasts"></div></div>
 <div id="hud">
   <div id="pcard"><img id="pj" alt=""><div><div class="nm">Jensen <span id="hearts"></span></div><div id="lead"><i></i></div></div></div>

@@ -1,6 +1,6 @@
 import { THREE, mat, box, rbox, cyl, sph, cap, glow, makeGPU, lerp, lerpAngle } from './core.js';
 
-const LEATHER = mat(0x1d1d22, { roughness: 0.38, metalness: 0.15 });
+const LEATHER = mat(0x1d1d22, { roughness: 0.3, metalness: 0.25 });
 const BLACK = mat(0x17171b, { roughness: 0.5 });
 
 function hairCap(head, color) {
@@ -29,7 +29,7 @@ export function makeChar(o = {}) {
   }
   const head = new THREE.Group(); head.position.y = 1.2; torso.add(head); P.head = head;
   const hm = sph(head, 0.52, skin, 0, 0, 0, 24); hm.scale.set(1, 0.94, 0.96);
-  if (o.glasses !== 'shades') for (const s of [-1, 1]) sph(head, 0.052, 0x1b1b1f, s * 0.19, -0.03, 0.455, 8);
+  if (o.glasses !== 'shades') for (const s of [-1, 1]) { sph(head, 0.058, mat(0x1b1b1f, { roughness: 0.2 }), s * 0.19, -0.03, 0.455, 10); sph(head, 0.02, glow(0xffffff, 1), s * 0.19 + 0.022, -0.008, 0.503, 6); }
   for (const s of [-1, 1]) { const c = sph(head, 0.085, 0xf5a9a0, s * 0.31, -0.16, 0.36, 8); c.scale.z = 0.3; }
   P.mouth = rbox(head, 0.1, 0.035, 0.03, 0x8a4b45, 0, -0.2, 0.47, 0.015);
   const hc = o.hair ?? 0x3a2a22;

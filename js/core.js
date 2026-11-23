@@ -6,7 +6,7 @@ const mats = new Map(), geos = new Map();
 export function mat(color, o) {
   const k = color + (o ? JSON.stringify(o) : '');
   let m = mats.get(k);
-  if (!m) { m = new THREE.MeshStandardMaterial({ color, roughness: 0.9, metalness: 0, ...o }); mats.set(k, m); }
+  if (!m) { m = new THREE.MeshStandardMaterial({ color, roughness: 0.72, metalness: 0, ...o }); mats.set(k, m); }
   return m;
 }
 const geo = (k, f) => { let g = geos.get(k); if (!g) { g = f(); geos.set(k, g); } return g; };
