@@ -72,13 +72,14 @@ export function makeChar(o = {}) {
 }
 
 export function makeJensen() {
-  const c = makeChar({ top: 0x1d1d22, legs: 0x1b1b20, hair: 0xb8b8c2, hairStyle: 'jensen', glasses: 'rect', shoes: 0x111114 });
+  const c = makeChar({ top: 0x1d1d22, legs: 0x1b1b20, hair: 0xb8b8c2, hairStyle: 'jensen', glasses: 'rect', shoes: 0xf4f4f0 });
   const { torso, body, slL, slR } = c.P;
   body.material = LEATHER; slL.material = slR.material = LEATHER;
   const jk = new THREE.Group(); torso.add(jk);
   for (const s of [-1, 1]) { const l = rbox(jk, 0.2, 0.26, 0.05, LEATHER, s * 0.13, 0.6, 0.27, 0.03); l.rotation.z = s * -0.5; l.rotation.x = -0.2; }
   box(jk, 0.03, 0.42, 0.02, 0xa8adb5, 0, 0.3, 0.305);
   rbox(jk, 0.64, 0.08, 0.62, LEATHER, 0, 0.1, 0, 0.04);
+  const tail = new THREE.Group(); tail.position.set(0, 0.16, -0.27); jk.add(tail); rbox(tail, 0.56, 0.44, 0.06, LEATHER, 0, -0.2, 0, 0.03); c.P.tail = tail;
   const tee = new THREE.Group(); torso.add(tee); tee.visible = false;
   rbox(tee, 0.2, 0.12, 0.02, glow(0x86d92b, 0.5), 0, 0.42, 0.3, 0.02);
   c.jacket = true;
@@ -136,12 +137,18 @@ export function makeNPC(kind = 'emp') {
 
 export function animChar(c, t, dt) {
   const P = c.P, a = c.anim;
-  c.ph += dt * (a === 'run' ? 16 : a === 'walk' ? 10.5 : 0);
+  c.ph += dt * (a === 'run' || a === 'keynote' || a === 'grab' ? 16 * (c.rate || 1) : a === 'walk' ? 10.5 : 0);
   const s = Math.sin(c.ph), T = t + c.seed;
-  let leg = 0, bob = 0, lean = 0, aL = [0, 0.08], aR = [0, 0.08], hX = 0, hZ = 0, rX = 0, rY = 0, y = 0, legSit = 0, spin = 0;
+  let lo = null, leg = 0, bob = 0, lean = 0, aL = [0, 0.08], aR = [0, 0.08], hX = 0, hZ = 0, rX = 0, rY = 0, y = 0, legSit = 0, spin = 0;
   switch (a) {
     case 'walk': leg = s * 0.6; bob = Math.abs(Math.cos(c.ph)) * 0.05; lean = 0.05; aL = [-s * 0.6, 0.1]; aR = [s * 0.6, 0.1]; hZ = s * 0.03; break;
     case 'run': leg = s * 0.95; bob = Math.abs(Math.cos(c.ph)) * 0.11; lean = 0.26; aL = [-s * 1.1 - 0.3, 0.2]; aR = [s * 1.1 - 0.3, 0.2]; break;
+    case 'jump': lo = [-1.2, 0.8]; aL = [-2.7, 0.5]; aR = [-2.7, 0.5]; lean = 0.1; break;
+    case 'slide': rX = -1.3; y = -0.05; lo = [-0.2, -0.7]; aL = [-0.6, 0.7]; aR = [-0.6, 0.7]; hX = 0.5; break;
+    case 'stumble': lean = 0.75; lo = [Math.sin(T * 30) * 0.9, -Math.sin(T * 30) * 0.9]; aL = [-2 + Math.sin(T * 28), 0.9]; aR = [-2 + Math.cos(T * 28), 0.9]; hZ = Math.sin(T * 22) * 0.2; break;
+    case 'caught': y = 0.45; lo = [Math.sin(T * 26) * 1.1, -Math.sin(T * 26) * 1.1]; aL = [-3 + Math.sin(T * 25) * 0.4, 0.5]; aR = [-3 + Math.cos(T * 25) * 0.4, 0.5]; hZ = Math.sin(T * 18) * 0.15; lean = 0.3; break;
+    case 'keynote': leg = s * 0.95; bob = Math.abs(Math.cos(c.ph)) * 0.11; lean = 0.05; aL = [-0.4, 1.7 + Math.sin(T * 5) * 0.12]; aR = [-0.4, 1.7 + Math.cos(T * 5) * 0.12]; hX = -0.2; break;
+    case 'grab': leg = s * 0.95; bob = Math.abs(Math.cos(c.ph)) * 0.11; lean = 0.34; aR = [-1.75 + Math.sin(T * 9) * 0.12, 0.05]; aL = [0.9, 0.3]; break;
     case 'talk': hX = Math.sin(T * 9) * 0.06; aR = [-1.0 + Math.sin(T * 7) * 0.3, 0.25]; bob = Math.abs(Math.sin(T * 6)) * 0.025; break;
     case 'flirt': lean = -0.1; hZ = 0.2 + Math.sin(T * 3) * 0.05; aR = [-2.7, 0.35]; aL = [0.2, 0.45]; bob = Math.sin(T * 4) * 0.02; rY = Math.sin(T * 2) * 0.15; break;
     case 'smug': lean = -0.14; aL = [0, 0.9]; aR = [0, 0.9]; hX = -0.12; bob = Math.sin(T * 3) * 0.015; break;
@@ -159,7 +166,8 @@ export function animChar(c, t, dt) {
   }
   const k = 1 - Math.exp(-dt * 14), v = c.v;
   const d = (n, to) => (v[n] = lerp(v[n] ?? to, to, k));
-  P.legL.rotation.x = legSit || d('leg', leg); P.legR.rotation.x = legSit || -v.leg;
+  d('leg', leg); P.legL.rotation.x = legSit || (lo ? d('ll', lo[0]) : (v.ll = v.leg)); P.legR.rotation.x = legSit || (lo ? d('lr', lo[1]) : (v.lr = -v.leg));
+  if (P.tail) P.tail.rotation.x = d('tail', a === 'run' || a === 'keynote' ? 0.75 + Math.sin(c.ph * 2) * 0.4 : a === 'jump' ? 1.3 : a === 'slide' ? -0.4 : 0.05);
   P.rig.position.y = d('y', y) + d('bob', bob);
   P.rig.rotation.x = d('rX', rX) + d('lean', lean);
   if (spin) P.rig.rotation.y += dt * 13; else P.rig.rotation.y = lerpAngle(P.rig.rotation.y % (Math.PI * 2), rY, k);

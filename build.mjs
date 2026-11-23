@@ -3,7 +3,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const dir = dirname(fileURLToPath(import.meta.url));
-const r = await build({ entryPoints: [join(dir, 'js/main.js')], bundle: true, minify: true, format: 'iife', write: false, target: 'es2020', legalComments: 'none' });
+const r = await build({ entryPoints: [join(dir, 'js/run.js')], bundle: true, minify: true, format: 'iife', write: false, target: 'es2020', legalComments: 'none' });
 const js = r.outputFiles[0].text.replace(/<\/script/g, '<\\/script');
 const html = readFileSync(join(dir, 'index.src.html'), 'utf8').replace('/*__GAME__*/', () => js);
 writeFileSync(join(dir, 'index.html'), html);

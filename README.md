@@ -1,34 +1,31 @@
-# Jensen's Temptation
+# JENSEN RUN!
 
-**GET THE GIRL. DON'T LOSE THE GPUs.**
+**DON'T GET CAUGHT. DON'T LOSE THE CHIPS.**
 
-A cosy low-poly romantic-espionage comedy for the browser. Entirely fictional parody: the characters, the
-romance and the espionage are invented, and nothing here depicts real events or real conduct by any real
-person or company. Not affiliated with or endorsed by NVIDIA.
+A three-lane endless runner for the browser. You are a cartoon Jensen in a leather jacket, sprinting through
+an exaggerated chip-company HQ while a fictional spy chases you for the GPUs.
+
+This is a comedy parody. The spy and the chase are invented, the "market cap saved" figure is a joke score
+and not financial data, and the game is not affiliated with or endorsed by NVIDIA.
 
 ## Play
 
-Open `index.html` in any modern browser. It is one self-contained file (Three.js and all game code
-are inlined), so it can be hosted on any static host (GitHub Pages, Netlify, itch.io) or opened from disk.
-The only network request is an optional Google Font; without it the game falls back to a system font.
+Open `index.html`. It is one self-contained file, so it works from disk or on any static host
+(GitHub Pages serves it from the repository root).
 
-| Action | Keyboard | Touch |
+| Action | Touch | Keyboard |
 | --- | --- | --- |
-| Move | WASD / arrows | joystick |
-| Sprint (uses stamina) | Shift | RUN |
-| Interact / advance / mini-games | E, Space or Enter | E |
-| Dialogue choice | mouse or 1–3 | tap |
-| Throw jacket (Mission 4) | Q or F | JACKET |
-| Pause | Esc or P | pause button |
+| Change lane | swipe left / right | ← → or A D |
+| Jump | swipe up | ↑, W or Space |
+| Slide (or drop fast in mid-air) | swipe down | ↓ or S |
+| Pause | pause button | Esc or P |
 
-## How the two meters matter
-
-- **Romance** gates progress (she walks if she is bored), slows her down and makes her easier to catch in
-  the heist, and decides which endings are open.
-- **National Security** decides how big her head start is in the heist, whether a guard stops her at the
-  door, and how many hazards she drops behind her.
-- Endings: *True Love, Total Data Breach* · *Secure but Single* · *The Impossible Ending*
-  (catch her with Romance ≥ 75 and Security ≥ 65) · plus one bonus ending for failing at both.
+- Chairs and coffee carts: jump or dodge. Server racks and GPU boxes: dodge. Lasers and meeting tables: slide.
+- Three unprotected hits and she catches you. On your first run the first three obstacles are free practice.
+- Power-ups: **Leather Jacket Shield** (absorbs one hit), **H100 Turbo** (smash through everything),
+  **Keynote Mode** (slow motion plus a chip magnet).
+- Four zones loop: Main Office, GPU Lab, Executive Floor, Data Centre.
+- Your best score is saved in the browser.
 
 ## Develop
 
@@ -37,6 +34,11 @@ npm install
 node build.mjs
 ```
 
-Sources are in `js/` (`core.js` helpers, `chars.js` characters and animation, `world.js` campus,
-`main.js` engine, UI and missions) and `index.src.html` (markup and CSS). `build.mjs` bundles everything
-into `index.html`. Append `?lowfx` to the URL to disable shadows on slow machines.
+Sources are `js/run.js` (the game), `js/chars.js` and `js/core.js` (models and helpers) and
+`index.src.html` (markup and CSS). `build.mjs` bundles them into `index.html`.
+Add `?lowfx` to the URL to turn shadows off on slow devices.
+
+## Also in this repo
+
+`temptation/` holds the earlier game, *Jensen's Temptation* (a top-down spy-romance comedy), playable at
+`temptation/index.html`. Rebuild it with `node temptation/build.mjs`.
