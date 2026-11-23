@@ -15,7 +15,7 @@ export function makeChar(o = {}) {
   const skin = o.skin ?? 0xf7d2ae, top = o.top ?? 0x3d8b5f, legsC = o.legs ?? 0x2f3340;
   for (const s of [-1, 1]) {
     const piv = new THREE.Group(); piv.position.set(s * 0.15, 0.44, 0); rig.add(piv);
-    cap(piv, 0.12, 0.2, o.dress ? skin : legsC, 0, -0.2, 0);
+    cap(piv, 0.12, 0.2, o.dress && o.legs == null ? skin : legsC, 0, -0.2, 0);
     rbox(piv, 0.25, 0.13, 0.36, o.shoes ?? 0x25262b, 0, -0.375, 0.05, 0.06);
     P[s < 0 ? 'legL' : 'legR'] = piv;
   }
@@ -24,7 +24,7 @@ export function makeChar(o = {}) {
   for (const s of [-1, 1]) {
     const piv = new THREE.Group(); piv.position.set(s * (o.dress ? 0.29 : 0.37), 0.6, 0); torso.add(piv);
     const sl = cap(piv, 0.092, 0.24, o.sleeve ?? top, 0, -0.19, 0);
-    sph(piv, 0.1, skin, 0, -0.42, 0, 10);
+    sph(piv, 0.1, o.glove ?? skin, 0, -0.42, 0, 10);
     P[s < 0 ? 'armL' : 'armR'] = piv; P[s < 0 ? 'slL' : 'slR'] = sl;
   }
   const head = new THREE.Group(); head.position.y = 1.2; torso.add(head); P.head = head;
@@ -90,20 +90,22 @@ export function makeJensen() {
   return c;
 }
 
-const DIS = { red: 0xd8363a, coat: 0xf6f4ee, hoodie: 0x7fbf3f, guard: 0x3a4b63 };
+const DIS = { red: 0xc8a876, coat: 0xf6f4ee, hoodie: 0x7fbf3f, guard: 0x3a4b63 };
 export function makeSpy() {
-  const c = makeChar({ top: DIS.red, dress: true, hair: 0x2b1c1a, hairStyle: 'bun', glasses: 'shades', shoes: 0xc22b30, skin: 0xf9d6b8 });
+  // classic trench-coat-and-fedora secret agent
+  const INK = 0x1c1c22, c = makeChar({ top: DIS.red, dress: true, legs: INK, hair: 0x6b3a26, hairStyle: 'long', glasses: 'shades', shoes: INK, skin: 0xf6d3bb, glove: INK });
   const { torso, head, armR, body, slL, slR } = c.P;
-  const dots = new THREE.Group(); torso.add(dots);
-  for (const [a, y] of [[0.4, 0.2], [-0.6, 0.36], [1.5, 0.12], [-1.7, 0.25], [2.6, 0.3], [0, 0.52], [-2.6, 0.1]]) {
-    const r = 0.43 - (y / 0.74) * 0.2 + 0.085;
-    const d = sph(dots, 0.055, 0xf4c542, Math.sin(a) * r, y, Math.cos(a) * r, 8); d.scale.setScalar(0.9);
-  }
-  for (const s of [-1, 1]) sph(head, 0.07, mat(0xf4c542, { metalness: 0.6, roughness: 0.3 }), s * 0.5, -0.2, 0.05, 8);
-  const lips = c.P.mouth; lips.material = mat(0xc22b30);
+  for (const s of [-1, 1]) { sph(head, 0.24, 0x6b3a26, s * 0.44, -0.2, -0.08, 12); sph(head, 0.2, 0x6b3a26, s * 0.4, -0.42, -0.02, 12); }
+  const dots = new THREE.Group(); torso.add(dots); // trench details
+  cyl(dots, 0.325, 0.345, 0.09, 0x6e4a2c, 0, 0.4, 0, 18); rbox(dots, 0.13, 0.12, 0.04, mat(0xd9b25a, { metalness: 0.6, roughness: 0.3 }), 0, 0.4, 0.335, 0.02);
+  for (const s of [-1, 1]) { const l = rbox(dots, 0.2, 0.26, 0.05, 0xb8975f, s * 0.12, 0.62, 0.2, 0.03); l.rotation.z = s * -0.5; l.rotation.x = -0.25; for (const y of [0.52, 0.27, 0.14]) sph(dots, 0.035, 0x4a3320, s * 0.1, y, 0.24 + (0.72 - y) * 0.29, 6); }
+  cyl(dots, 0.2, 0.22, 0.1, 0xd8363a, 0, 0.76, 0, 14); rbox(dots, 0.14, 0.3, 0.05, 0xd8363a, 0.1, 0.62, 0.22, 0.03).rotation.z = -0.2;
+  const fed = new THREE.Group(); head.add(fed); fed.position.set(0, 0.4, -0.06); fed.rotation.set(-0.1, 0, 0.1);
+  cyl(fed, 0.88, 0.88, 0.05, 0x26262c, 0, 0, 0, 24); cyl(fed, 0.42, 0.57, 0.4, 0x26262c, 0, 0.22, 0, 20); cyl(fed, 0.565, 0.585, 0.1, 0xd8363a, 0, 0.08, 0, 20);
+  c.P.mouth.material = mat(0xc22b30);
   const brief = new THREE.Group(); armR.add(brief); brief.position.set(0.05, -0.68, 0.02);
   rbox(brief, 0.14, 0.4, 0.56, 0x1f2126, 0, 0, 0, 0.05); rbox(brief, 0.05, 0.1, 0.2, 0x3a3d44, 0, 0.24, 0, 0.02);
-  box(brief, 0.15, 0.06, 0.08, 0xf4c542, 0, 0.1, 0);
+  box(brief, 0.15, 0.06, 0.08, 0xd9b25a, 0, 0.1, 0);
   const stache = rbox(head, 0.3, 0.08, 0.06, 0x5a3a22, 0, -0.14, 0.49, 0.03); stache.visible = false;
   const hat = new THREE.Group(); head.add(hat); hat.visible = false;
   const hc = sph(hat, 0.56, 0x5d9e2e, 0, 0.2, -0.02, 16); hc.scale.set(1, 0.62, 1); rbox(hat, 0.6, 0.06, 0.36, 0x5d9e2e, 0, 0.3, 0.5, 0.03);
@@ -112,7 +114,7 @@ export function makeSpy() {
   c.brief = brief; c.gpu = gpu; c.drape = drape; c.disguise = 'red';
   c.setDisguise = n => {
     c.disguise = n; body.material = mat(DIS[n]); slL.material = slR.material = mat(DIS[n]);
-    dots.visible = n === 'red'; stache.visible = n === 'coat' || n === 'guard'; hat.visible = n === 'hoodie' || n === 'guard';
+    dots.visible = fed.visible = n === 'red'; stache.visible = n === 'coat' || n === 'guard'; hat.visible = n === 'hoodie' || n === 'guard';
     hc.material = mat(n === 'guard' ? 0x2c3a4f : 0x5d9e2e); hat.children[1].material = hc.material;
   };
   return c;

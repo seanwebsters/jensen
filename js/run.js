@@ -433,7 +433,7 @@ function update(dt) {
   shield.scale.setScalar(1 + Math.sin(G.t * 8) * 0.05); shield.material.opacity = 0.11 + Math.sin(G.t * 6) * 0.04;
   const gt = over ? 0.95 : G.state === 'menu' ? 2.4 : [G.dist < 26 ? 4.2 : 9.5, 5.2, 3.1][Math.min(G.hits, 2)] + (G.turbo > 0 ? 5 : 0);
   G.gap = lerp(G.gap, gt, 1 - Math.exp(-dt * (over ? 6 : 1.8)));
-  S.g.position.x = lerp(S.g.position.x, G.px + (over ? 0.5 : menu ? 1.7 : 0), 1 - Math.exp(-dt * 5)); S.g.position.z = G.gap; S.anim = G.gap < 6.5 ? 'grab' : 'run'; S.rate = J.rate; S.g.visible = G.gap < 9.2;
+  S.g.position.x = lerp(S.g.position.x, G.px + (over ? 0.5 : menu ? 1.7 : -1.7), 1 - Math.exp(-dt * 5)); S.g.position.z = G.gap; S.anim = G.gap < 6.5 ? 'grab' : 'run'; S.rate = J.rate; S.g.visible = G.gap < 9.2;
   if (over && G.speed < 1) { S.anim = 'cheer'; }
   animChar(J, G.t, dt); animChar(S, G.t, dt);
   blobs[0].position.x = G.px; blobs[0].scale.setScalar(1 / (1 + G.py * 0.5)); blobs[1].position.set(S.g.position.x, 0.03, S.g.position.z); blobs[1].visible = S.g.visible;
