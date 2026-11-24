@@ -52,6 +52,7 @@ body:not(.run) #hud{opacity:0}
 .popt.zone{background:var(--g);color:var(--ink);border-color:#fff;letter-spacing:2px}
 @keyframes pt{0%{opacity:0;margin-top:14px}12%{opacity:1;margin-top:0}80%{opacity:1}100%{opacity:0;margin-top:-14px}}
 .bub{position:absolute;transform:translate(-50%,-100%);background:#fff;border-radius:16px;padding:4px 12px;font-weight:800;font-size:16px;box-shadow:0 4px 10px rgba(0,0,0,.25);white-space:nowrap;animation:bi .25s cubic-bezier(.3,1.7,.5,1)}
+.bub.plus{background:none;box-shadow:none;color:#b9ff5e;font-size:19px;text-shadow:0 2px 0 #16201b,0 0 10px rgba(0,0,0,.6);animation:pl2 .7s forwards}.bub.plus:after{display:none}@keyframes pl2{from{opacity:0;margin-top:10px}25%{opacity:1}to{opacity:0;margin-top:-34px}}
 @keyframes bi{from{transform:translate(-50%,-70%) scale(.3);opacity:0}}
 .fly{position:absolute;width:20px;height:20px;border-radius:5px;background:var(--g2);box-shadow:0 0 12px var(--g2);transition:transform .38s cubic-bezier(.5,-.3,.7,1),opacity .38s;pointer-events:none}
 #vig{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 46%,transparent 52%,rgba(20,10,4,.42))}
