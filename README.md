@@ -27,6 +27,12 @@ Open `index.html`. It is one self-contained file, so it works from disk or on an
 - Four zones loop: Main Office, GPU Lab, Executive Floor, Data Centre.
 - Your best score is saved in the browser.
 
+## Art
+
+The title art, game-over illustration, executive-floor paintings and link preview card in `assets/` were
+generated with an AI image model and are embedded into `index.html` at build time (except `og.jpg` and
+`icon.png`, which are served as files for link previews).
+
 ## Develop
 
 ```bash

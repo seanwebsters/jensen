@@ -6,6 +6,17 @@
 <title>JENSEN RUN!</title>
 <meta name="description" content="Don't get caught. Don't lose the chips. A parody endless runner.">
 <meta name="theme-color" content="#101613">
+<meta property="og:type" content="website">
+<meta property="og:title" content="JENSEN RUN!">
+<meta property="og:description" content="Don't get caught. Don't lose the chips. A parody endless runner you can play in your browser.">
+<meta property="og:url" content="https://seanwebsters.github.io/jensen/">
+<meta property="og:image" content="https://seanwebsters.github.io/jensen/assets/og.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="JENSEN RUN!">
+<meta name="twitter:description" content="Don't get caught. Don't lose the chips. Play free in your browser.">
+<meta name="twitter:image" content="https://seanwebsters.github.io/jensen/assets/og.jpg">
+<link rel="icon" href="__ICON__"><link rel="apple-touch-icon" href="assets/icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -47,7 +58,7 @@ body:not(.run) #hud{opacity:0}
 #fx{position:fixed;inset:0;pointer-events:none;opacity:0;transition:opacity .25s}
 #fx.turbo{opacity:1;box-shadow:inset 0 0 120px 40px rgba(134,217,43,.5)}#fx.key{opacity:1;box-shadow:inset 0 0 140px 50px rgba(255,214,92,.45)}#fx.hit{opacity:1;transition:none;background:rgba(255,60,90,.28)}
 .screen{position:fixed;inset:0;display:none;place-items:center;padding:16px;z-index:5}.screen.on{display:grid}
-#menu{place-items:stretch;background:linear-gradient(rgba(10,16,13,.5),rgba(10,16,13,0) 34%,rgba(10,16,13,0) 66%,rgba(10,16,13,.72))}
+#menu{place-items:stretch;background:linear-gradient(rgba(10,16,13,.3),rgba(10,16,13,0) 28%,rgba(10,16,13,0) 52%,rgba(10,16,13,.88)),url(__KEYP__) center 60%/cover #101613}
 #menu .in{display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:max(6vh,24px) 0 max(4vh,16px);text-align:center}
 h1.logo{margin:0;font-size:clamp(54px,17vw,128px);line-height:.8;font-weight:800;color:#fff;letter-spacing:1px;transform:rotate(-3deg);text-shadow:0 5px 0 var(--g),0 10px 0 #4f8f1c,0 16px 0 var(--ink),0 26px 34px rgba(0,0,0,.5)}
 h1.logo span{color:var(--g2);display:block}
@@ -61,6 +72,7 @@ h1.logo span{color:var(--g2);display:block}
 .card{width:min(420px,100%);background:var(--cream);border:3px solid #fff;border-radius:30px;box-shadow:0 8px 0 rgba(0,0,0,.2),0 24px 50px rgba(0,0,0,.4);text-align:center;overflow:hidden;animation:ci .45s cubic-bezier(.3,1.5,.5,1)}
 @keyframes ci{from{transform:translateY(40px) scale(.85);opacity:0}}
 .card .top{background:var(--ink);color:#fff;padding:16px 16px 14px}
+#oart{display:block;width:100%;height:clamp(110px,24vh,220px);object-fit:cover;object-position:50% 26%;background:var(--ink)}
 .card h2{margin:0;font-size:clamp(24px,7vw,32px);line-height:1;font-weight:800}
 .card .big{font-size:clamp(17px,5vw,22px);font-weight:800;line-height:1.1;margin-top:10px;color:#fff}.card .big b{color:var(--g2);font-size:1.5em;display:block;line-height:1.05}
 .card .cta{color:var(--g2);font-weight:800;letter-spacing:2px;font-size:14px;margin-top:6px}
@@ -68,7 +80,9 @@ h1.logo span{color:var(--g2);display:block}
 #newbest{display:none;margin:8px auto 0;background:var(--rose);color:#fff;font-weight:800;border-radius:14px;padding:2px 14px;width:max-content;transform:rotate(-2deg)}
 .card .btns{padding:12px 14px 6px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}.card .btn{font-size:19px;padding:10px 26px}
 .card .fine{font-size:10.5px;color:#8b948e;font-weight:600;padding:4px 16px 12px;line-height:1.2}
+@media (max-height:620px){#oart{display:none}}
 @media (max-height:520px){.card .top{padding:10px}.stats{padding-top:8px}h1.logo{font-size:60px}.tag{margin-top:14px}.slot{width:48px;height:48px}}
+@media (orientation:landscape){#menu{background:linear-gradient(rgba(10,16,13,0) 42%,rgba(10,16,13,.92)),url(__KEY__) center 22%/cover #101613}#menu .in{justify-content:flex-end;gap:14px;padding-bottom:max(3vh,12px)}h1.logo{font-size:clamp(36px,10vh,84px);transform:rotate(-2deg)}h1.logo span{display:inline;margin-left:.22em}.tag{margin-top:16px}#bPlay{font-size:clamp(22px,5.5vh,36px);padding:8px 56px}#menu p{margin-top:6px}}
 </style>
 </head>
 <body>
@@ -90,7 +104,7 @@ h1.logo span{color:var(--g2);display:block}
   <p class="disc">A fictional comedy parody. The spy and the chase are invented and the "market cap" is a joke score, not financial data. Not affiliated with or endorsed by NVIDIA.</p></div>
 </div></div>
 <div class="screen" id="paused"><div class="card"><div class="top"><h2>PAUSED</h2><div class="cta">SHE IS ALSO POLITELY WAITING</div></div><div class="btns"><button class="btn" id="bResume">Resume</button><button class="btn alt" id="bSnd">Sound: on</button><button class="btn alt" id="bQuit">Restart</button></div><div class="fine">← → change lane · ↑ / Space jump · ↓ slide</div></div></div>
-<div class="screen" id="over"><div class="card">
+<div class="screen" id="over"><div class="card"><img id="oart" alt="" src="__OVER__">
   <div class="top"><h2>SHE GOT THE CHIPS 💔</h2><div class="big">I SAVED <b id="oshort"></b> BEFORE GETTING CAUGHT.</div><div class="cta">CAN YOU BEAT ME?</div></div>
   <div id="newbest">NEW PERSONAL BEST!</div>
   <div class="stats"><div><span id="odist"></span><small>DISTANCE</small></div><div><span id="ochips"></span><small>GPUs</small></div><div><span id="obest"></span><small>BEST</small></div></div>

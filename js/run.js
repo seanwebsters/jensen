@@ -5,6 +5,8 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
+import P1 from '../assets/p1.jpg';
+import P2 from '../assets/p2.jpg';
 
 const $ = id => document.getElementById(id);
 const LANE = 2.3, SEG = 40, NSEG = 6, TOUCH = matchMedia('(pointer:coarse)').matches;
@@ -71,6 +73,7 @@ const portraitTex = textTex((c, W, H) => {
   c.strokeStyle = '#111'; c.lineWidth = 7; c.strokeRect(W * 0.31, H * 0.46, W * 0.16, H * 0.09); c.strokeRect(W * 0.53, H * 0.46, W * 0.16, H * 0.09); c.beginPath(); c.moveTo(W * 0.47, H * 0.5); c.lineTo(W * 0.53, H * 0.5); c.stroke();
   c.lineWidth = 5; c.beginPath(); c.arc(W / 2, H * 0.6, W * 0.07, 0.2, Math.PI - 0.2); c.stroke();
 }, 256, 256);
+const artTex = [P1, P2].map(u => { const t = new THREE.TextureLoader().load(u); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t; });
 const chartTex = textTex((c, W, H) => { c.fillStyle = '#0f1915'; c.fillRect(0, 0, W, H); c.strokeStyle = '#86d92b'; c.lineWidth = 10; c.lineJoin = 'round'; c.beginPath(); c.moveTo(20, H - 30); c.lineTo(90, H - 70); c.lineTo(140, H - 55); c.lineTo(200, 40); c.lineTo(236, 22); c.stroke(); c.fillStyle = '#fff'; c.font = '800 34px sans-serif'; c.fillText('UP ONLY', 20, 46); }, 256, 256);
 
 function posed(kind, anim) { const c = makeNPC(kind); c.anim = anim; for (let i = 0; i < 30; i++) animChar(c, 0, 0.1); return c.g; }
@@ -108,8 +111,8 @@ function buildSeg(zi) {
   } else if (zi === 2) {
     both(s => { rbox(D, 0.4, 5, SEG, 0x7a4d32, s * 6.6, 2.5, -SEG / 2, 0.05); rbox(D, 0.5, 0.5, SEG, 0x5e3a25, s * 6.5, 0.25, -SEG / 2, 0.05); });
     for (const pz of [-6, -20, -34]) both(s => {
-      rbox(D, 0.12, 2.3, 1.9, mat(0xd9b25a, { metalness: 0.6, roughness: 0.3 }), s * 6.36, 2.9, pz, 0.04);
-      const p = new THREE.Mesh(new THREE.PlaneGeometry(1.6, 2.0), new THREE.MeshBasicMaterial({ map: (pz === -20 ? chartTex : portraitTex) })); p.position.set(s * 6.28, 2.9, pz); p.rotation.y = -s * Math.PI / 2; D.add(p);
+      rbox(D, 0.12, 3.1, 3.1, mat(0xd9b25a, { metalness: 0.6, roughness: 0.3 }), s * 6.36, 3.1, pz, 0.04);
+      const p = new THREE.Mesh(new THREE.PlaneGeometry(2.75, 2.75), new THREE.MeshBasicMaterial({ map: (pz === -20 ? chartTex : artTex[(pz === -6) ^ (s > 0) ? 0 : 1]) })); p.position.set(s * 6.28, 3.1, pz); p.rotation.y = -s * Math.PI / 2; D.add(p);
     });
     for (const pz of [-13, -27]) both(s => {
       rbox(D, 1.1, 0.55, 2.8, 0x5b3a2a, s * 5.3, 0.35, pz, 0.22); rbox(D, 0.35, 1.1, 2.8, 0x5b3a2a, s * 5.85, 0.6, pz, 0.16);
@@ -269,7 +272,7 @@ function reset() {
   bubs.forEach(b => b.el.remove()); bubs.length = 0;
 }
 function start() {
-  initAudio(); reset(); G.state = 'run'; document.body.classList.add('run'); ['menu', 'over', 'paused'].forEach(i => $(i).classList.remove('on'));
+  initAudio(); reset(); G.state = 'run'; cPos.set(0, 5.6, 11.5); cLook.set(0, 1.5, -10); document.body.classList.add('run'); ['menu', 'over', 'paused'].forEach(i => $(i).classList.remove('on'));
   tone(520, 0.1, 'triangle', 0.08); tone(780, 0.14, 'triangle', 0.08, 0, 0.09); bubble(S, 'Jensen! Wait!', 1.6);
 }
 
@@ -456,7 +459,7 @@ function update(dt) {
   v3.set(G.px * 0.7, over ? 1.3 : 1.5 + G.py * 0.2, over ? 0.4 : -10); if (menu) v3.set(0.5, portrait ? 1.5 : 2.0, 1.5); cLook.lerp(v3, 1 - Math.exp(-dt * (over ? 3 : 7)));
   cam.position.set(cPos.x + (Math.random() - 0.5) * sh, cPos.y + (Math.random() - 0.5) * sh, cPos.z); cam.lookAt(cLook);
   const tf = baseFov + (G.turbo > 0 ? 13 : 0) + (G.speed - 13) * 0.35 - (G.keynote > 0 ? 5 : 0); if (Math.abs(cam.fov - tf) > 0.05) { cam.fov = lerp(cam.fov, tf, 1 - Math.exp(-dt * 4)); cam.updateProjectionMatrix(); }
-  for (let i = bubs.length - 1; i >= 0; i--) { const b = bubs[i]; b.t -= dt; if (b.t <= 0) { b.el.remove(); bubs.splice(i, 1); continue; } v3.copy(b.a.g.position); v3.y += 2.7; v3.project(cam); b.el.style.left = clamp((v3.x + 1) / 2 * innerWidth, 90, innerWidth - 90) + 'px'; b.el.style.top = clamp((1 - v3.y) / 2 * innerHeight, 60, innerHeight - 110) + 'px'; }
+  for (let i = bubs.length - 1; i >= 0; i--) { const b = bubs[i]; b.t -= dt; if (b.t <= 0) { b.el.remove(); bubs.splice(i, 1); continue; } v3.copy(b.a.g.position); v3.y += 2.7; const off = v3.z > cam.position.z - 0.5 || !b.a.g.visible; v3.project(cam); b.el.style.left = (off ? 120 : clamp((v3.x + 1) / 2 * innerWidth, 100, innerWidth - 100)) + 'px'; b.el.style.top = (off ? innerHeight - 150 : clamp((1 - v3.y) / 2 * innerHeight, 150, innerHeight - 130)) + 'px'; }
   music(dt);
 }
 let last = performance.now(), noRender = false;
